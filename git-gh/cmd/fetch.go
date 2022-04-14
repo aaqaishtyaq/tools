@@ -67,6 +67,11 @@ func fetch(ctx context.Context, cmd *cobra.Command, args []string) {
 
 	// cmd.Printf("CC -- ctx: %s\n", ctx)
 	// var repos github.GithubRepositories
+	// ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Millisecond*200))
+	// defer func() {
+	// 	fmt.Println("Cancelling the context...")
+	// 	cancel()
+	// }()
 	for _, r := range repos {
 		client := github.NewGithubClient(ctx, owner, r)
 		client.Pulls(ctx)
