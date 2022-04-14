@@ -1,0 +1,4 @@
+# GitIgnore
+.DS_Store
+git-gh
+coverage.txt
