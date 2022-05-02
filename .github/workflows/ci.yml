@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - trunk
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go: ["1.17"]
+        os: [ubuntu-latest]
+    name: Go ${{ matrix.go }} in ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go }}
+    - name: Environment
+      run: |
+        go version
+        go env
+    - name: Test
+      env:
+        GOFLAGS: -mod=mod
+      run: cd git-gh; go test -short -race -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic ./...
