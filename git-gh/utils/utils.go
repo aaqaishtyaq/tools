@@ -10,12 +10,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	sshKeyFile = []string{
-		"id_rsa",
-		"id_ed25519",
-	}
-)
+var sshKeyFile = []string{
+	"id_rsa",
+	"id_ed25519",
+}
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
