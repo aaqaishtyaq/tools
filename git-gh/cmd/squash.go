@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"context"
-
 	"github.com/aaqaishtyaq/tools/git-gh/git"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -31,28 +29,32 @@ var squashCmd = &cobra.Command{
 		and squash and rebase the commits from the PR head's`,
 	Args:       cobra.MinimumNArgs(2),
 	ArgAliases: []string{"owner", "repos"},
-	Run:        contextAdder.withContext(squash),
+	RunE:       squash,
 }
 
 func init() {
 	rootCmd.AddCommand(squashCmd)
 }
 
-func squash(ctx context.Context, cmd *cobra.Command, args []string) {
+func squash(cmd *cobra.Command, args []string) error {
 	owner := args[0]
 	repo := args[1]
 	labels := args[2:]
 
 	log = logrus.New()
 
+	ctx := cmd.Root().Context()
 	gRepo, err := git.NewGitRepository(owner, repo, log)
 	if err != nil {
-		log.Warn("Unable to find git repository")
-		return
+		log.WithError(err)
+		return err
 	}
 
 	err = gRepo.Squash(ctx, labels, log)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err)
+		return err
 	}
+
+	return nil
 }
