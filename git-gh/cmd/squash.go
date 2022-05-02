@@ -23,18 +23,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	// squashCmd represents the fetch command
-	squashCmd = &cobra.Command{
-		Use:   "squash owner repo [..labels] [flags]",
-		Short: "Squash and Rebase all the commits from Github PRs given the label",
-		Long: `Fetches Github pull request's metadata
+// squashCmd represents the fetch command
+var squashCmd = &cobra.Command{
+	Use:   "squash owner repo [..labels] [flags]",
+	Short: "Squash and Rebase all the commits from Github PRs given the label",
+	Long: `Fetches Github pull request's metadata
 		and squash and rebase the commits from the PR head's`,
-		Args:       cobra.MinimumNArgs(2),
-		ArgAliases: []string{"owner", "repos"},
-		Run:        contextAdder.withContext(squash),
-	}
-)
+	Args:       cobra.MinimumNArgs(2),
+	ArgAliases: []string{"owner", "repos"},
+	Run:        contextAdder.withContext(squash),
+}
 
 func init() {
 	rootCmd.AddCommand(squashCmd)

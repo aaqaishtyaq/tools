@@ -25,18 +25,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	// fetchCmd represents the fetch command
-	fetchCmd = &cobra.Command{
-		Use:   "fetch owner repos [..repos] [flags]",
-		Short: "Fetch Github PR information",
-		Long: `Fetches Github pull request's metadata
+// fetchCmd represents the fetch command
+var fetchCmd = &cobra.Command{
+	Use:   "fetch owner repos [..repos] [flags]",
+	Short: "Fetch Github PR information",
+	Long: `Fetches Github pull request's metadata
 		and returns the list of Pull requests and there information.`,
-		Args:       cobra.MinimumNArgs(2),
-		ArgAliases: []string{"owner", "repos"},
-		Run:        contextAdder.withContext(fetch),
-	}
-)
+	Args:       cobra.MinimumNArgs(2),
+	ArgAliases: []string{"owner", "repos"},
+	Run:        contextAdder.withContext(fetch),
+}
 
 func init() {
 	rootCmd.AddCommand(fetchCmd)

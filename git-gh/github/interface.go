@@ -105,7 +105,6 @@ func (g *GithubRepository) RefForLabel(ctx context.Context, labels []string, log
 
 func (g *GithubRepository) OpenPullRequests(ctx context.Context, log *logrus.Logger) ([]*github.PullRequest, error) {
 	pulls, _, err := g.Client.PullRequests.List(ctx, g.Owner, g.Repo, &github.PullRequestListOptions{State: "open"})
-
 	if err != nil {
 		return []*github.PullRequest{}, err
 	}
