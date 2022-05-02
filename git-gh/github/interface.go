@@ -1,3 +1,18 @@
+/*
+Copyright © 2022 Aaqa Ishtyaq <aaqaishtyaq@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package github
 
 import (
@@ -35,25 +50,14 @@ func NewGithubClient(ctx context.Context, owner, repo string) *GithubRepository 
 	}
 }
 
-func (g *GithubRepository) Pulls(ctx context.Context, log *logrus.Logger) error {
+func (g *GithubRepository) Pulls(ctx context.Context, log *logrus.Logger) ([]*github.PullRequest, error) {
 	pulls, err := g.OpenPullRequests(ctx, log)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
 	}
 
-	fmt.Printf("Github Information %s,  %s\n", g.Owner, g.Repo)
-	fmt.Println("Count of the pulls")
-	fmt.Println(len(pulls))
-	for _, r := range pulls {
-		head := r.Head
-		gitRef := head.Ref
-		fmt.Println(*r.Number)
-		fmt.Println("------------")
-		fmt.Println(*gitRef)
-	}
-
-	return nil
+	return pulls, nil
 }
 
 func (g *GithubRepository) PullsWithLabel(ctx context.Context, labels []string, log *logrus.Logger) ([]*github.PullRequest, error) {
