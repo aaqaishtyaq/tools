@@ -23,6 +23,7 @@ import (
 	"syscall"
 
 	"github.com/aaqaishtyaq/tools/git-gh/cmd"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM)
 
 	defer func() {
-		fmt.Println("Ending...")
+		logrus.Info("Done")
 		signal.Stop(signals)
 		cancel()
 	}()

@@ -1,0 +1,23 @@
+# Dependabot automatically keeps our packages up to date
+# Docs: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: "./git-gh"
+    schedule:
+      time: "09:00"
+      interval: daily
+      timezone: Asia/Kolkata
+    reviewers:
+      - aaqaishtyaq
+    open-pull-requests-limit: 99
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      time: "09:00"
+      interval: daily
+      timezone: Asia/Kolkata
+    reviewers:
+      - aaqaishtyaq
+    open-pull-requests-limit: 99

@@ -17,47 +17,44 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/aaqaishtyaq/tools/git-gh/github"
-	"github.com/aaqaishtyaq/tools/git-gh/utils"
+	"github.com/aaqaishtyaq/tools/git-gh/git"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var (
-	// fetchCmd represents the fetch command
-	fetchCmd = &cobra.Command{
-		Use:   "fetch owner repos [..repos] [flags]",
-		Short: "Fetch Github PR information",
+	// squashCmd represents the fetch command
+	squashCmd = &cobra.Command{
+		Use:   "squash owner repo [..labels] [flags]",
+		Short: "Squash and Rebase all the commits from Github PRs given the label",
 		Long: `Fetches Github pull request's metadata
-		and returns the list of Pull requests and there information.`,
+		and squash and rebase the commits from the PR head's`,
 		Args:       cobra.MinimumNArgs(2),
 		ArgAliases: []string{"owner", "repos"},
-		Run:        contextAdder.withContext(fetch),
+		Run:        contextAdder.withContext(squash),
 	}
 )
 
 func init() {
-	rootCmd.AddCommand(fetchCmd)
+	rootCmd.AddCommand(squashCmd)
 }
 
-func fetch(ctx context.Context, cmd *cobra.Command, args []string) {
+func squash(ctx context.Context, cmd *cobra.Command, args []string) {
 	owner := args[0]
 	repo := args[1]
 	labels := args[2:]
 
 	log = logrus.New()
-	client := github.NewGithubClient(ctx, owner, repo)
-	branches, err := client.RefForLabel(ctx, labels, log)
+
+	gRepo, err := git.NewGitRepository(owner, repo, log)
 	if err != nil {
-		fmt.Println("Unable to get Refs for the branches")
+		log.Warn("Unable to find git repository")
+		return
 	}
 
-	branches = utils.UniqueStrings(branches)
-	for _, b := range branches {
-		log.WithFields(logrus.Fields{
-			"branch": b,
-		}).Info("Found")
+	err = gRepo.Squash(ctx, labels, log)
+	if err != nil {
+		log.Error(err)
 	}
 }
