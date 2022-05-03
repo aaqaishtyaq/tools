@@ -22,9 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var (
-	appName = "git-gh"
+	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:   appName,
 		Short: "Git Github extension",
@@ -33,29 +32,11 @@ Allow manupulation of commits and PRs. Interacts
 with Github's REST APIs.
 `,
 	}
-	contextAdder ctxAdder
-	log          *logrus.Logger
+	appName = "git-gh"
+	log     *logrus.Logger
 )
 
-type commandWithContext func(context.Context, *cobra.Command, []string)
-
-type ctxAdder struct {
-	ctx context.Context
-}
-
-func (c *ctxAdder) setContext(ctx context.Context) {
-	c.ctx = ctx
-}
-
-func (c *ctxAdder) withContext(fn commandWithContext) func(cmd *cobra.Command, args []string) {
-	return func(cmd *cobra.Command, args []string) {
-		fn(c.ctx, cmd, args)
-	}
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute(ctx context.Context) error {
-	contextAdder.setContext(ctx)
-	return rootCmd.Execute()
+// ExecuteContext is the same as cmd.Execute(), but sets the ctx on the command.
+func ExecuteContext(ctx context.Context) error {
+	return rootCmd.ExecuteContext(ctx)
 }

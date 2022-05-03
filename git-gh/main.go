@@ -17,7 +17,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -49,14 +48,14 @@ func main() {
 	go func() {
 		select {
 		case <-signals:
-			fmt.Println("Got signal, propagating...")
+			logrus.Info("Got signal, propagating...")
 			cancel()
 		case <-ctx.Done():
 		}
 	}()
 
-	if err := cmd.Execute(ctx); err != nil {
-		fmt.Println(err)
+	if err := cmd.ExecuteContext(ctx); err != nil {
+		logrus.Error(err)
 		exitCode = 1
 		return
 	}

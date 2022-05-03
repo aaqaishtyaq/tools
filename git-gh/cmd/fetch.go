@@ -16,9 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"context"
-	"fmt"
-
 	"github.com/aaqaishtyaq/tools/git-gh/github"
 	"github.com/aaqaishtyaq/tools/git-gh/utils"
 	"github.com/sirupsen/logrus"
@@ -33,23 +30,25 @@ var fetchCmd = &cobra.Command{
 		and returns the list of Pull requests and there information.`,
 	Args:       cobra.MinimumNArgs(2),
 	ArgAliases: []string{"owner", "repos"},
-	Run:        contextAdder.withContext(fetch),
+	RunE:       fetch,
 }
 
 func init() {
 	rootCmd.AddCommand(fetchCmd)
 }
 
-func fetch(ctx context.Context, cmd *cobra.Command, args []string) {
+func fetch(cmd *cobra.Command, args []string) error {
 	owner := args[0]
 	repo := args[1]
 	labels := args[2:]
 
 	log = logrus.New()
+	ctx := cmd.Root().Context()
 	client := github.NewGithubClient(ctx, owner, repo)
 	branches, err := client.RefForLabel(ctx, labels, log)
 	if err != nil {
-		fmt.Println("Unable to get Refs for the branches")
+		log.WithError(err)
+		return err
 	}
 
 	branches = utils.UniqueStrings(branches)
@@ -58,4 +57,6 @@ func fetch(ctx context.Context, cmd *cobra.Command, args []string) {
 			"branch": b,
 		}).Info("Found")
 	}
+
+	return nil
 }
